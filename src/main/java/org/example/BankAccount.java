@@ -28,6 +28,22 @@ public class BankAccount {
         this.balance = balance;
     }
 
+    // deposit method
+    public boolean deposit(double amount){
+        if(amount>0){
+            this.balance += amount;
+            return true;
+        } return false;
+    }
+
+    // withdraw method
+    public boolean withdraw(double amount){
+        if(amount>0 && amount <= this.balance){
+            this.balance -= amount;
+            return true;
+        } return false;
+    }
+
     //display all info of an account
     public void displayInfo() {
         System.out.println("Account Number: " + accountNumber);

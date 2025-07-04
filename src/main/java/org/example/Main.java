@@ -9,6 +9,7 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
+        int accountNumber;
         System.out.println("==== BANK MENU ====");
         System.out.println("1. Create Account \n2. View All Accounts \n3. Check Balance \n4. Deposit \n5. Withdraw \n6. Exit");
 
@@ -26,23 +27,107 @@ public class Main {
             switch(userChoice){
                 case 1:
                     System.out.println("\n==== Create Account ====");
-                    createAccount(scanner);
+                    System.out.print("Enter Account Number: ");
+                    try {
+                        accountNumber = Integer.parseInt(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.out.println("> [ERR: Invalid Account Number Format]");
+                        continue;
+                    }
+
+                    // check for duplicate account number
+                    if (findAccount(accountNumber) != null) {
+                        System.out.println("> [ERR: Account Number Already Exists]");
+                        return;
+                    }
+
+                    System.out.print("Enter Holder Name: ");
+                    String name = scanner.nextLine();
+
+                    System.out.print("> [Do you want to enter an Initial Deposit? (y/n)]: ");
+                    String depositChoice = scanner.nextLine().toLowerCase();
+
+                    double initialDeposit = 0;
+                    if (depositChoice.equals("y")) {
+                        System.out.print("Enter Initial Deposit Amount: ");
+                        try {
+                            initialDeposit = Double.parseDouble(scanner.nextLine());
+                            if (initialDeposit <= 0) {
+                                System.out.println("> [ERR: Deposit must be > $0.00]");
+                                return;
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("> [ERR: Invalid Deposit Input]");
+                            return;
+                        }
+                    } else {
+                        System.out.println("> [No Initial Deposit Made]");
+                    }
+                    createAccount(accountNumber,  name, initialDeposit);
                     break;
+
+
                 case 2:
                     System.out.println("==== View All Accounts ====");
                     viewAllAccounts();
                     break;
                 case 3:
                     System.out.println("==== Check Balance ====");
-                    checkBalance(scanner);
+                    System.out.print("Enter Account Number: ");
+                    try{
+                        accountNumber = Integer.parseInt(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.out.println("> [ERR: Invalid Account Number]");
+                        return;
+                    }
+
+                    checkBalance(accountNumber);
                     break;
                 case 4:
                     System.out.println("==== Deposit ====");
-                    deposit(scanner);
+
+                    System.out.print("Enter Account Number: ");
+                    try{
+                        accountNumber = Integer.parseInt(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.out.print("> [ERR: Invalid Account Number Input]");
+                        continue;
+                    }
+                    // get deposit amount
+                    System.out.print("Enter Amount to Deposit: ");
+                    double newDeposit;
+
+                    try{
+                        newDeposit = Double.parseDouble(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.out.println("> [ERR: Invalid Deposit Input]");
+                        break;
+                    }
+
+                    deposit(accountNumber, newDeposit);
                     break;
                 case 5:
                     System.out.println("==== Withdraw ====");
-                    withdraw(scanner);
+
+                    System.out.print("Enter Account Number: ");
+                    try{
+                        accountNumber = Integer.parseInt(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.out.print("> [ERR: Invalid Account Number Input]");
+                        continue;
+                    }
+                    // get deposit amount
+                    System.out.print("Enter Amount to Withdraw: ");
+                    double withdrawAmount;
+
+                    try{
+                        withdrawAmount = Double.parseDouble(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.out.println("> [ERR: Invalid Withdrawal Input]");
+                        break;
+                    }
+
+                    withdraw(accountNumber, withdrawAmount);
                     break;
                 case 6:
                     System.out.println("> [EXITING: Thank you for using Bank!]");
@@ -55,45 +140,7 @@ public class Main {
 
 
     // create account method
-    public static void createAccount(Scanner scanner){
-        int accountNumber;
-        System.out.print("Enter Account Number: ");
-        try {
-            accountNumber = Integer.parseInt(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            System.out.println("> [ERR: Invalid Account Number Format]");
-            return;
-        }
-
-        // check for duplicate account number
-        if (findAccount(accountNumber) != null) {
-            System.out.println("> [ERR: Account Number Already Exists]");
-            return;
-        }
-
-        System.out.print("Enter Holder Name: ");
-        String name = scanner.nextLine();
-
-        System.out.print("> [Do you want to enter an Initial Deposit? (y/n)]: ");
-        String depositChoice = scanner.nextLine().toLowerCase();
-
-        double initialDeposit = 0;
-        if (depositChoice.equals("y")) {
-            System.out.print("Enter Initial Deposit Amount: ");
-            try {
-                initialDeposit = Double.parseDouble(scanner.nextLine());
-                if (initialDeposit <= 0) {
-                    System.out.println("> [ERR: Deposit must be > $0.00]");
-                    return;
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("> [ERR: Invalid Deposit Input]");
-                return;
-            }
-        } else {
-            System.out.println("> [No Initial Deposit Made]");
-        }
-
+    public static void createAccount(int accountNumber, String name, double initialDeposit){
         BankAccount account = new BankAccount(accountNumber, name, initialDeposit);
         accounts.add(account);
         System.out.println("> [SUCCESS: Account Created]");
@@ -121,16 +168,7 @@ public class Main {
     }
 
     // check balance method
-    public static void checkBalance(Scanner scanner){
-        System.out.print("Enter Account Number: ");
-        int accountNumber;
-        try{
-             accountNumber = Integer.parseInt(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            System.out.println("> [ERR: Invalid Account Number]");
-            return;
-        }
-
+    public static void checkBalance(int accountNumber){
         BankAccount account = findAccount(accountNumber);
         if(account != null){
             System.out.println("Account Holder Name: " + account.getName());
@@ -141,83 +179,35 @@ public class Main {
     }
 
     // deposit method
-    public static void deposit(Scanner scanner){
-
-        System.out.print("Enter Account Number: ");
-        int accountNumber;
-        try{
-            accountNumber = Integer.parseInt(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            System.out.print("> [ERR: Invalid Account Number Input]");
-            return;
-        }
-
+    public static void deposit(int accountNumber, double newDeposit){
         BankAccount account = findAccount(accountNumber);
         if(account != null){
-            System.out.print("Enter Amount to Deposit: ");
-
-
-            try{
-                double newDeposit = Double.parseDouble(scanner.nextLine());
-
-                if(newDeposit > 0){
-                    account.setBalance(account.getBalance() + newDeposit);
-                    System.out.println("New Balance: $" + account.getBalance());
-                    System.out.println("> [SUCCESS: Deposit]");
-                }else{
-                    System.out.println("> [ERR: Deposit Must be > $0.00]");
-                }
-
-            } catch (NumberFormatException e) {
-                System.out.println("> [ERR: Invalid Deposit Input]");
+            if(account.deposit(newDeposit)){
+                System.out.println("New Balance: $" + account.getBalance());
+                System.out.println("> [SUCCESS: Deposit]");
+            }else{
+                System.out.println("> [ERR: Deposit Must be > $0.00]");
             }
-
         }else{
             System.out.println("> [ERR: Account Not Found]");
         }
     }
-
 
     // withdraw method
-    public static void  withdraw(Scanner scanner){
-
-        System.out.print("Enter Account Number: ");
-        int accountNumber;
-        try{
-            accountNumber = Integer.parseInt(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            System.out.print("> [ERR: Invalid Account Number Input]");
-            return;
-        }
-
+    public static void  withdraw(int accountNumber, double withdrawAmount) {
         BankAccount account = findAccount(accountNumber);
-        if(account != null){
-            System.out.print("Enter Amount to Withdraw: ");
-
-
-            try{
-                double withdrawAmount = Double.parseDouble(scanner.nextLine());
-
-                if(withdrawAmount > 0 && withdrawAmount <= account.getBalance()){
-                    account.setBalance(account.getBalance() - withdrawAmount);
-                    System.out.println("New Balance: $" + account.getBalance());
-                    System.out.println("> [SUCCESS: Withdrawal]");
-
-                }else if(withdrawAmount > account.getBalance()){
-                    System.out.println("> [ERR: Withdrawal should be less than current balance.]");
-                }else{
-                    System.out.println("> [ERR: Deposit Must be > $0.00]");
-                }
-
-            } catch (NumberFormatException e) {
-                System.out.println("> [ERR: Invalid Deposit Input]");
+        if (account != null) {
+            if (account.withdraw(withdrawAmount)) {
+                System.out.println("New Balance: $" + account.getBalance());
+                System.out.println("> [SUCCESS: Withdrawal]");
+            } else {
+                double Balance = account.getBalance();
+                System.out.println("> [ERR: Withdrawal Must be > $0.00 and <= $" + Balance + "]");
             }
-
-        }else{
+        } else {
             System.out.println("> [ERR: Account Not Found]");
         }
 
     }
-
 
 }
