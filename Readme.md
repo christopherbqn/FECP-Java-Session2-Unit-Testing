@@ -1,34 +1,21 @@
-# Lab 1: Build a Java Bank Account System
+# Lab 2: Unit Testing
 
-Submitted by: Christopher Bayquen | July 3, 2025
+Submitted by: Christopher Bayquen | July 4,  2025
 
-This repository holds our submission for our Lab 1 Activity for the Second Session of our Java Fundamental Class. For this activity we were tasked to create a banking system where users can create accounts, view all accounts, view balances, deposit, and withdraw.
+This repository holds my submission for our Lab 3 Activity which tasked us to create a banking system. For this lab activity we were to implement unit testing for the program created the previous lab. This repository holds the `MainTest.java`  which implements testing the following:
 
-### Input/Output :
+1. Deposit a valid amount
+2. Deposit an invalid amount
+3. Withdraw a valid amount
+4. Withdraw an invalid amount
+5. Withdraw an amount that exceeds the balance
+6. Test the getAccountNumber() method
+7. Test creation of Bank Account without deposits
 
-**Valid Input: Creating an Account**
+### Unit Test :
+<img alt="Unit Test" src="images/Unit-Test-1.png"/>
+<img alt="Unit Test" src="images/Unit-Test.png"/>
 
-<img alt="Sample Create Account" src="images/Sample-Create Account.png"/>
-
-**Valid Input: Viewing All Accounts**
-
-<img alt="Sample Input/Output Screenshot" src="images/Sample-View Accounts.png"/>
-
-**Valid Input: Checking Balances**
-
-<img alt="Sample Input/Output Screenshot" src="images/Sample-Check Balance.png"/>
-
-
-**Valid Input: Depositing**
-
-<img alt="Sample Input/Output Screenshot" src="images/Sample-Deposit.png"/>
-
-**Valid Input: Withdrawing**
-
-<img alt="Sample Input/Output Screenshot" src="images/Sample-Withdrawal.png"/>
-
-
-**Valid Input: Exiting**
-
-<img alt="Sample Input/Output Screenshot" src="images/Sample-Exit.png"/>
+### Test Coverage :
+<img alt="Test Coverage" src="images/Test-Coverage.png"/>
 
